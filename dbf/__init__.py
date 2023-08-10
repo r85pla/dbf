@@ -3096,8 +3096,7 @@ class Record(object):
         if record._data[0] == NULL:
             record._data[0] = SPACE
         if record._data[0] not in (SPACE, ASTERISK):
-            # TODO: log warning instead
-            raise DbfError("record data not correct -- first character should be a ' ' or a '*'.")
+            warnings.warn(f"record data {record._data[0]} is not correct -- first character should be a ' ' or a '*'.")
         if not _fromdisk and layout.location == ON_DISK:
             record._update_disk()
         return record
@@ -4190,17 +4189,20 @@ def update_currency(value, *ignore):
 def retrieve_date(bytes, fielddef, *ignore):
     """
     Returns the ascii coded date as fielddef[CLASS] or fielddef[EMPTY]
-    """
-    text = to_bytes(bytes)
-    if text in (b'        ', b'00000000'):
-        cls = fielddef[EMPTY]
-        if cls is NoneType:
-            return None
-        return cls()
-    year = int(text[0:4])
-    month = int(text[4:6])
-    day = int(text[6:8])
-    return fielddef[CLASS](year, month, day)
+    """    text = to_bytes(bytes)
+    try:
+        if text in (b'        ', b'00000000'):
+            cls = fielddef[EMPTY]
+            if cls is NoneType:
+                return None
+            return cls()
+        year = int(text[0:4])
+        month = int(text[4:6])
+        day = int(text[6:8])
+        return fielddef[CLASS](year, month, day)
+    except Exception as e:
+        warnings.warn(f"{text} is not a valid date")
+        return None
 
 def update_date(moment, *ignore):
     """
