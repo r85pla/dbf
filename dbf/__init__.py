@@ -116,7 +116,7 @@ days_per_leap_month = [31, 31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31, 31]
 class ExitStack(object):
     """Context manager for dynamic management of a stack of exit callbacks
 
-    For examples:
+    For example:
 
         with ExitStack() as stack:
             files = [stack.enter_context(open(fname)) for fname in filenames]
