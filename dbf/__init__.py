@@ -4353,7 +4353,7 @@ def update_numeric(value, fielddef, *ignore):
     returns value as ascii representation, rounding decimal
     portion as necessary
     """
-    value = None if value.lower() == 'nan' else value
+    value = None if isinstance(value, str) and value.lower() == 'nan' else value
     if value == None:
         return fielddef[LENGTH] * b' '
     try:
