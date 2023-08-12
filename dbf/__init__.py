@@ -4353,25 +4353,28 @@ def update_numeric(value, fielddef, *ignore):
     returns value as ascii representation, rounding decimal
     portion as necessary
     """
-    value = None if isinstance(value, str) and value.lower() == 'nan' else value
+    # value = None if isinstance(value, str) and value.lower() == 'nan' else value
     if value == None:
         return fielddef[LENGTH] * b' '
     try:
         value = float(value)
     except Exception:
         raise DbfError("incompatible type: %s(%s)" % (type(value), value)).from_exc(None)
-    decimalsize = fielddef[DECIMALS]
-    totalsize = fielddef[LENGTH]
-    if decimalsize:
-        decimalsize += 1
-    maxintegersize = totalsize - decimalsize
-    integersize = len("%.0f" % floor(value))
-    if integersize > maxintegersize:
-        if integersize != 1:
-            raise DataOverflowError('Integer portion too big')
-        string = scinot(value, decimalsize)
-        if len(string) > totalsize:
-            raise DataOverflowError('Value representation too long for field')
+    try:
+        decimalsize = fielddef[DECIMALS]
+        totalsize = fielddef[LENGTH]
+        if decimalsize:
+            decimalsize += 1
+        maxintegersize = totalsize - decimalsize
+        integersize = len("%.0f" % floor(value))
+        if integersize > maxintegersize:
+            if integersize != 1:
+                raise DataOverflowError('Integer portion too big')
+            string = scinot(value, decimalsize)
+            if len(string) > totalsize:
+                raise DataOverflowError('Value representation too long for field')
+    except Exception as e:
+        warnings.warn("failed for value %r" % value)
     return ("%*.*f" % (fielddef[LENGTH], fielddef[DECIMALS], value)).encode('ascii')
 
 def retrieve_vfp_datetime(bytes, fielddef, *ignore):
