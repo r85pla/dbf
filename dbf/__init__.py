@@ -4287,7 +4287,8 @@ def update_logical(data, *ignore):
         return b'T'
     if data == False:
         return b'F'
-    raise ValueError("unable to automatically coerce %r to Logical" % data)
+    return b'?'
+    # raise ValueError("unable to automatically coerce %r to Logical" % data)
 
 def retrieve_memo(bytes, fielddef, memo, decoder):
     """
