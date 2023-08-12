@@ -4211,7 +4211,11 @@ def update_date(moment, *ignore):
     """
     if moment == None:
         return b'        '
-    return (u"%04d%02d%02d" % moment.timetuple()[:3]).encode('ascii')
+    try:
+        return (u"%04d%02d%02d" % moment.timetuple()[:3]).encode('ascii')
+    except Exception as e:
+        warnings.warn("Unable to convert date: %r" % moment)
+        return b'        '
 
 def retrieve_double(bytes, fielddef, *ignore):
     """
