@@ -4311,7 +4311,8 @@ def update_memo(string, fielddef, memo, decoder, encoder):
     Writes string as a memo, returns the block number it was saved into
     """
     if memo is None:
-        raise DbfError('Memos are being ignored, unable to update')
+        return b' '
+        # raise DbfError('Memos are being ignored, unable to update')
     if string == None:
         string = b''
     if fielddef[FLAGS] & BINARY:
@@ -4352,6 +4353,7 @@ def update_numeric(value, fielddef, *ignore):
     returns value as ascii representation, rounding decimal
     portion as necessary
     """
+    value = None if value == 'nan' else value
     if value == None:
         return fielddef[LENGTH] * b' '
     try:
@@ -4490,7 +4492,8 @@ def update_vfp_memo(string, fielddef, memo, decoder, encoder):
     Writes string as a memo, returns the block number it was saved into
     """
     if memo is None:
-        raise DbfError('Memos are being ignored, unable to update')
+        return b' '
+        # raise DbfError('Memos are being ignored, unable to update')
     if string == None:
         return struct.pack('<i', 0)
     if fielddef[FLAGS] & BINARY:
